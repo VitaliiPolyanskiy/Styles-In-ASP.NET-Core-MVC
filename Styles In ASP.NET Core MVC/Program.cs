@@ -4,7 +4,7 @@ builder.Services.AddControllersWithViews();
 
 var app = builder.Build();
 
-app.UseStaticFiles(); // обрабатывает запросы к файлам в папке wwwroot
+app.UseStaticFiles(); // обробляє запити до файлів у папці wwwroot
 
 app.MapControllerRoute(
     name: "default",

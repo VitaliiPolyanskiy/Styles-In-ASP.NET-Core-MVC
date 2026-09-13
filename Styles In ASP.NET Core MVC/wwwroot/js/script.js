@@ -2,65 +2,63 @@
     const createButton = document.querySelector('.request__button');
     const todoCards = document.querySelector('.tasks');
     const inputName = document.querySelector('.request__input-name');
-    const inputTittle = document.querySelector('.request__input-tittle');
+    const inputDescription = document.querySelector('.request__input-description');
     let counter = 1;
 
-    createButton.addEventListener('click', () =>{
-        if (inputName.value === '') {
-            alert('You must write name of task');
-        }else if(inputTittle.value === ''){
-            alert('You must write tittle');
-        }else{
-            const card = document.createElement('li');
-            const cardName = document.createElement('span');
-            const cardTittle = document.createElement('p');
-            const cardCheckBox = document.createElement('input');
-            const labelCheckBox = document.createElement('label');
-            const deleteButton = document.createElement('button');
-    
-            card.classList.toggle('card');
-            cardTittle.classList.toggle('card__tittle');
-            cardName.classList.toggle('card__name');
-            cardCheckBox.classList.toggle('card__checkbox');
-            cardCheckBox.id = `card__checkbox-${counter}`;
-            labelCheckBox.classList.toggle('card__checkbox');
-            labelCheckBox.setAttribute('for', `card__checkbox-${counter}`);
-            cardCheckBox.type = 'checkbox';
-            deleteButton.classList.toggle('card__button');
-            counter++;
+    createButton.addEventListener('click', () => {
+        const nameValue = inputName.value.trim();
+        const descValue = inputDescription.value.trim();
 
-            todoCards.append(card);
-    
-            card.append(cardCheckBox);
-            card.append(labelCheckBox);
-    
-            cardName.innerText = inputName.value;
-            card.append(cardName);
-            inputName.value = '';
-    
-            cardTittle.innerText = inputTittle.value;
-            card.append(cardTittle);
-            inputTittle.value = '';
-    
-            card.append(deleteButton);
-            deleteButton.innerText = 'Delete';
-    
-            cardCheckBox.addEventListener('click', () => {
-                if(cardCheckBox.checked){
-                    cardName.classList.add('card__name--done');
-                    cardTittle.classList.add('card__tittle--done');
-                }else{
-                    cardName.classList.remove('card__name--done');
-                    cardTittle.classList.remove('card__tittle--done');
-                };
-            })
-    
-            deleteButton.addEventListener('click', () => {
-                if (cardCheckBox.checked){
-                    card.remove();
-                };
-            });
-        };
+        if (!nameValue) {
+            alert('Будь ласка, введіть назву завдання');
+            return;
+        }
+        if (!descValue) {
+            alert('Будь ласка, введіть опис завдання');
+            return;
+        }
+
+        const li = document.createElement('li');
+        li.className = 'card';
+        li.innerHTML = `
+            <input class="card__checkbox" id="card__checkbox-${counter}" type="checkbox">
+            <label class="card__checkbox-label" for="card__checkbox-${counter}"></label>
+            <span class="card__name">${nameValue}</span>
+            <p class="card__description">${descValue}</p>
+            <button class="card__button">Видалити</button>
+        `;
+
+        todoCards.append(li);
+
+        inputName.value = '';
+        inputDescription.value = '';
+        counter++;
     });
 
+     todoCards.addEventListener('click', (e) => {
+        const card = e.target.closest('.card');
+        if (!card) return;
+
+            if (e.target.matches('.card__checkbox')) {
+            const name = card.querySelector('.card__name');
+            const desc = card.querySelector('.card__description');
+            
+            if (e.target.checked) {
+                name.classList.add('card__name--done');
+                desc.classList.add('card__description--done');
+            } else {
+                name.classList.remove('card__name--done');
+                desc.classList.remove('card__description--done');
+            }
+        }
+
+        if (e.target.matches('.card__button')) {
+            const checkbox = card.querySelector('.card__checkbox');
+            if (checkbox.checked) {
+                card.remove(); 
+            } else {
+                alert('Виконайте завдання перед тим, як його видалити.');
+            }
+        }
+    });
 })();
